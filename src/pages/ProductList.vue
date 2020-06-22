@@ -5,9 +5,55 @@
       :data="productos.juguetes"
       :columns="columns"
       row-key="codigo"
-      selection="single"
+      selection="multiple"
+      :selected-rows-label="getSelectedString"
       :selected.sync="selected"
+      :pagination="paginationConfig"
+      :dense="config.dense"
     />
+    <q-drawer
+      v-model="rightDrawerOpen"
+      show-if-above
+      side="right"
+      dark
+      content-class="q-pt-lg"
+    >
+      <q-list>
+        <q-item-label header>Configuración de tabla</q-item-label>
+        <q-item>
+          <q-item-section>
+            <q-toggle
+              v-model="config.showOutOfStock"
+              label="Mostrar items sin stock"
+              right-label
+            ></q-toggle>
+          </q-item-section>
+        </q-item>
+        <q-item>
+          <q-item-section>
+            <q-toggle
+              v-model="config.dense"
+              label="Tabla densa"
+              right-label
+            ></q-toggle>
+          </q-item-section>
+        </q-item>
+        <q-separator dark />
+        <q-item-label header>Acciones</q-item-label>
+        <q-item v-for="(action, index) in actions" :key="index">
+          <q-item-section>
+            <q-btn
+              :color="action.color"
+              :active="action.active"
+              :icon="action.icon"
+              :label="action.title"
+              stack
+            >
+            </q-btn>
+          </q-item-section>
+        </q-item>
+      </q-list>
+    </q-drawer>
   </q-page>
 </template>
 
@@ -19,6 +65,26 @@ export default {
   data: function() {
     return {
       selected: [],
+      config: {
+        showOutOfStock: true,
+        dense: true
+      },
+      actions: [
+        {
+          title: "Modificar",
+          icon: "edit",
+          caption: "Modificar elemento seleccionado",
+          active: false,
+          color: "secondary"
+        },
+        {
+          title: "Eliminar",
+          icon: "delete",
+          caption: "Eliminar elementos seleccionados",
+          active: false,
+          color: "primary"
+        }
+      ],
       columns: [
         {
           name: "codigo",
@@ -56,10 +122,22 @@ export default {
           format: val => `${val}`,
           sortable: true
         }
-      ]
+      ],
+      paginationConfig: {
+        rowsPerPage: 10
+      }
     };
   },
-  computed: mapState(["productos"])
+  computed: mapState(["productos"]),
+  methods: {
+    getSelectedString() {
+      return this.selected.length === 0
+        ? ""
+        : `${this.selected.length} record${
+            this.selected.length > 1 ? "s" : ""
+          } selected of ${this.productos.juguetes.length}`;
+    }
+  }
 };
 </script>
 

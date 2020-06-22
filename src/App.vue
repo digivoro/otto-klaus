@@ -6,6 +6,11 @@
 
 <script>
 export default {
-  name: 'App'
-}
+  name: "App",
+  mounted() {
+    // Llamar a firebase y pedir lista de productos
+    // Guardar productos en variable
+    // Almacenar en store local
+  }
+};
 </script>
